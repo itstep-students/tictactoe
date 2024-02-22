@@ -1,5 +1,5 @@
-import {useState} from "react";
-
+import {useEffect, useState} from "react";
+import Start from "./components/Start.jsx";
 import Player from "./components/Player";
 import GameBoard from "./components/GameBoard.jsx";
 import Log from "./components/Log.jsx";
@@ -60,6 +60,12 @@ function deriveWinner(gameBoard, players){
 }
 
 function App() {
+    const [settings, setSettings] = useState({
+        isSettingsOpen: false,
+        opponents: 'Computer',
+        gamesToWin: "3",
+        themId: "1"
+    });
     const [players, setPlayers]=useState(PLAYERS);
     const [gameTurns, setGameTurns] = useState([]);
     const activePlayer = deriveActivePlayer(gameTurns);
@@ -67,15 +73,36 @@ function App() {
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
 
+    useEffect(()=>{
+        handlerSettingsButton();
+    },[])
+    function handlerSettingsButton() {
+        setSettings(prevSettings => {
+            return {
+                ...prevSettings,
+                isSettingsOpen: !prevSettings.isSettingsOpen
+            }
+        })
+    }
+    function handlerChangeSettings(settings) {
+        setSettings(prevSettings => {
+            return {
+                ...prevSettings,
+                ...settings,
+                isSettingsOpen: false
+            }
+        })
+    }
+
     function handleSelectSquare(rowIndex, colIndex) {
         //setActivePlayer((curActivePlayer) => curActivePlayer === "X" ? "0" : "X");
         setGameTurns((prevTurns) => {
-           const currentPlayer = deriveActivePlayer(prevTurns);
+            const currentPlayer = deriveActivePlayer(prevTurns);
 
             const updatedTurns = [
                 {
-                square:{ row: rowIndex, col: colIndex },
-                player: currentPlayer
+                    square:{ row: rowIndex, col: colIndex },
+                    player: currentPlayer
                 },
                 ...prevTurns,
             ];
@@ -98,7 +125,9 @@ function App() {
 
   return (
     <main>
+        <button className="menu" onClick={handlerSettingsButton}><img src="../src/assets/setting.png" alt="menu" className="menu__img"/></button>
       <div id="game-container">
+          {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
         <ol id="players" className="highlight-player">
           <Player
               initialName={PLAYERS.X}
