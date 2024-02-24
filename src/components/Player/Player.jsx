@@ -1,5 +1,7 @@
+import styles from './Player.module.css';
+
 import {useState} from 'react';
-export default function Player({ initialName, symbol, isActive, onChangeName }){
+export default function Player({ initialName, symbol, playerIcon, isActive, onChangeName }){
     const [isEditing, setIsEditing] = useState(false);
     const [playerName, setPlayerName] = useState(initialName);
 
@@ -10,12 +12,10 @@ export default function Player({ initialName, symbol, isActive, onChangeName }){
             onChangeName(symbol, playerName);
         }
     }
-    
     function handleChange(event) {
         setPlayerName(event.target.value);
-
     }
-    let editablePlayerName =  <span className="player-name">{playerName}</span>;
+    let editablePlayerName =  <span className={styles.player_name}>{playerName}</span>;
     // let btnCaption = 'Edit';
 
     if(isEditing){
@@ -25,9 +25,10 @@ export default function Player({ initialName, symbol, isActive, onChangeName }){
 
     return(
         <li className={isActive ? 'active' : undefined}>
-            <span className="player">
+            <span className={styles.player}>
                 {editablePlayerName}
-                <span className="player-symbol">{symbol}</span>
+                {symbol && <span className={styles.player_symbol}>{symbol}</span>}
+                {playerIcon && <img src={playerIcon}/>}
             </span>
             <button onClick={handleEditClick}>{ isEditing ? 'Save' : 'Edit'}</button>
         </li>

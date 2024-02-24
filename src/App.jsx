@@ -1,9 +1,14 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-import Player from "./components/Player";
-import GameBoard from "./components/GameBoard.jsx";
-import Log from "./components/Log.jsx";
-import GameOver from "./components/GameOver.jsx";
+import './index.css';
+import styles from './App.module.css';
+
+import Player from "./components/Player/Player.jsx";
+import GameBoard from "./components/GameBoard/GameBoard";
+import Log from "./components/Log/Log.jsx";
+import GameOver from "./components/GameOver/GameOver.jsx";
+import Menu from "./components/Menu/Menu.jsx";
+
 import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
 
 const PLAYERS = {
@@ -62,13 +67,15 @@ function deriveWinner(gameBoard, players){
 function App() {
     const [players, setPlayers]=useState(PLAYERS);
     const [gameTurns, setGameTurns] = useState([]);
+    const [useTheme, setUseTheme]=useState(null);
+
     const activePlayer = deriveActivePlayer(gameTurns);
     const gameBoard = deriveGameBoard(gameTurns); //игровые ходы
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
 
     function handleSelectSquare(rowIndex, colIndex) {
-        //setActivePlayer((curActivePlayer) => curActivePlayer === "X" ? "0" : "X");
+        //setActivePlayer((curActivePlayer) => curActivePlayer === "X" ? "O" : "X");
         setGameTurns((prevTurns) => {
            const currentPlayer = deriveActivePlayer(prevTurns);
 
@@ -98,17 +105,20 @@ function App() {
 
   return (
     <main>
-      <div id="game-container">
-        <ol id="players" className="highlight-player">
+        <Menu onSetUseTheme={setUseTheme}/>
+      <div className={styles.game_container}>
+        <ol className={`${players} ${styles.highlight_player}`}>
           <Player
               initialName={PLAYERS.X}
-              symbol="X"
+              symbol={useTheme.symbol1}
+              playerIcon = {useTheme.playerIcon1}
               isActive={activePlayer === "X"}
               onChangeName = {handlePlayerNameChange}
           />
           <Player
-              initialName={PLAYERS.O} //ОШИБКА .0
-              symbol="O"
+              initialName={PLAYERS.O}
+              symbol={useTheme.symbol2}
+              playerIcon = {useTheme.playerIcon2}
               isActive={activePlayer === "O"}
               onChangeName = {handlePlayerNameChange}
           />

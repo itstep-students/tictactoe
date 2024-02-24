@@ -1,7 +1,8 @@
+import styles from './GameBoard.module.css';
 export default function GameBoard({ onSelectSquare, board }){
 
     return(
-        <ol id='game-board'>
+        <ol className={styles.game_board}>
             {board.map((row, rowIndex) =>(
                 <li key={rowIndex}>
                     <ol>
