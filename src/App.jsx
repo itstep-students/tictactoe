@@ -5,6 +5,7 @@ import GameBoard from "./components/GameBoard.jsx";
 import Log from "./components/Log.jsx";
 import GameOver from "./components/GameOver.jsx";
 import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
+import settingsIcon from './assets/setting.png'
 
 const PLAYERS = {
     'X': 'Player 1',
@@ -125,7 +126,7 @@ function App() {
 
   return (
     <main>
-        <button className="menu" onClick={handlerSettingsButton}><img src="../src/assets/setting.png" alt="menu" className="menu__img"/></button>
+        <button className="menu" onClick={handlerSettingsButton}><img src={settingsIcon} alt="menu" className="menu__img"/></button>
       <div id="game-container">
           {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
         <ol id="players" className="highlight-player">
