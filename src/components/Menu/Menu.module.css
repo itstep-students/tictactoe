@@ -1,4 +1,4 @@
-.menu{
+.menu {
     position: relative;
     display: block;
     text-align: center;
@@ -6,29 +6,20 @@
     margin-right: auto;
 }
 
-h3{
+h3 {
     font-family: 'Caprasimo', cursive;
     font-size: 2rem;
     margin: 1rem auto 1rem auto;
 }
 
-.light {
-    color: #3f3b00;
-    transition: color 200ms linear;
-}
 
-.dark {
-    color: #eadd7e;
-    transition: color 100ms linear;
-}
-
-.button_background{
+.button_background {
     display: flex;
     justify-content: center;
     gap: 100px;
 }
 
-.button_light{
+.button_light {
     background-image: url('public/button_2.png');
     background-size: cover;
     width: 50px;
@@ -38,7 +29,7 @@ h3{
     cursor: pointer;
 }
 
-.button_dark{
+.button_dark {
     background-image: url('public/button_1.png');
     background-size: cover;
     width: 50px;
@@ -49,12 +40,12 @@ h3{
 }
 
 #button_light:hover,
-#button_dark:hover{
+#button_dark:hover {
     opacity: 0.6;
 }
 
 #button_light:active,
-#button_dark:active{
+#button_dark:active {
     transform: scale(0.98);
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
 }
