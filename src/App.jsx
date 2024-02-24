@@ -1,15 +1,14 @@
 import {useEffect, useState} from "react";
-
+import Start from "./components/Start";
 import './index.css';
 import styles from './App.module.css';
-
-import Player from "./components/Player/Player.jsx";
+import Player from "./components/Player/Player";
 import GameBoard from "./components/GameBoard/GameBoard";
-import Log from "./components/Log/Log.jsx";
-import GameOver from "./components/GameOver/GameOver.jsx";
-import Menu from "./components/Menu/Menu.jsx";
-
+import Log from "./components/Log/Log";
+import GameOver from "./components/GameOver/GameOver";
+import Menu from "./components/Menu/Menu";
 import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
+import settingsIcon from './assets/setting.png'
 
 const PLAYERS = {
     'X': 'Player 1',
@@ -65,6 +64,12 @@ function deriveWinner(gameBoard, players){
 }
 
 function App() {
+    const [settings, setSettings] = useState({
+        isSettingsOpen: false,
+        opponents: 'Computer',
+        gamesToWin: "3",
+        themId: "1"
+    });
     const [players, setPlayers]=useState(PLAYERS);
     const [gameTurns, setGameTurns] = useState([]);
     const [useTheme, setUseTheme]=useState(null);
@@ -74,15 +79,36 @@ function App() {
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
 
+    useEffect(()=>{
+        handlerSettingsButton();
+    },[])
+    function handlerSettingsButton() {
+        setSettings(prevSettings => {
+            return {
+                ...prevSettings,
+                isSettingsOpen: !prevSettings.isSettingsOpen
+            }
+        })
+    }
+    function handlerChangeSettings(settings) {
+        setSettings(prevSettings => {
+            return {
+                ...prevSettings,
+                ...settings,
+                isSettingsOpen: false
+            }
+        })
+    }
+
     function handleSelectSquare(rowIndex, colIndex) {
         //setActivePlayer((curActivePlayer) => curActivePlayer === "X" ? "O" : "X");
         setGameTurns((prevTurns) => {
-           const currentPlayer = deriveActivePlayer(prevTurns);
+            const currentPlayer = deriveActivePlayer(prevTurns);
 
             const updatedTurns = [
                 {
-                square:{ row: rowIndex, col: colIndex },
-                player: currentPlayer
+                    square:{ row: rowIndex, col: colIndex },
+                    player: currentPlayer
                 },
                 ...prevTurns,
             ];
@@ -105,9 +131,13 @@ function App() {
 
   return (
     <main>
+        <button className="menu" onClick={handlerSettingsButton}>
+            <img src={settingsIcon} alt="menu" className="menu__img"/>
+        </button>
         <Menu onSetUseTheme={setUseTheme}/>
-      <div className={styles.game_container}>
-        <ol className={`${players} ${styles.highlight_player}`}>
+      <div id="game-container" className={styles.game_container}>
+          {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
+        <ol id="players" className={styles.highlight_player}>
           <Player
               initialName={PLAYERS.X}
               symbol={useTheme.symbol1}

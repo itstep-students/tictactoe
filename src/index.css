@@ -139,3 +139,22 @@ ol {
     transform: scale(1);
   }
 }
+.menu {
+  margin: 0;
+  position: absolute;
+  right: 230px;
+  border-radius: 50px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.menu__img {
+  background-color: #383624;
+  border-radius: 50px;
+  padding: 5px;
+  width: 49px;
+}
+.menu__img:active {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transform: rotate(90deg);
+}
