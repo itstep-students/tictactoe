@@ -1,37 +1,9 @@
 import {useEffect, useState} from "react";
 import styles from './Menu.module.css';
+import {themes} from "../../App.jsx";
 
-import buttonLight from '/game-logo.png';
-import buttonDark from '/logo_1.png';
 
-import nut  from "/nut.png";
-import dale from "/dale.png";
 
-import backgroundImgLight from '/bg-pattern-light.png';
-import backgroundImgDark from '/bg-pattern-dark.png';
-
-const themes = [
-    {
-        id: 1,
-        backgroundImg: backgroundImgLight,
-        logoImg: buttonLight,
-        gameNameStyles: 'light',
-        symbol1: 'X',
-        playerIcon1: null,
-        symbol2: 'O',
-        playerIcon2: null
-    },
-    {
-        id: 2,
-        backgroundImg: backgroundImgDark,
-        logoImg: buttonDark,
-        gameNameStyles: 'dark',
-        symbol1: null,
-        playerIcon1: nut,
-        symbol2: null,
-        playerIcon2: dale
-    }
-]
 export default function Menu({onSetUseTheme}){
 
     const [themeId, setThemeId] = useState(1);

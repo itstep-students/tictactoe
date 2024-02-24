@@ -1,14 +1,35 @@
 import {useEffect, useState} from "react";
 import Start from "./components/Start";
-import './index.css';
 import styles from './App.module.css';
 import Player from "./components/Player/Player";
 import GameBoard from "./components/GameBoard/GameBoard";
 import Log from "./components/Log/Log";
 import GameOver from "./components/GameOver/GameOver";
-import Menu from "./components/Menu/Menu";
 import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
 import settingsIcon from './assets/setting.png'
+
+
+import buttonLight from '/game-logo.png';
+import buttonDark from '/logo_1.png';
+
+import backgroundImgLight from '/bg-pattern-light.png';
+import backgroundImgDark from '/bg-pattern-dark.png';
+import Menu from "./components/Menu/Menu";
+
+export const themes = [
+    {
+        id: 1,
+        backgroundImg: backgroundImgLight,
+        logoImg: buttonLight,
+        gameNameStyles: 'light'
+    },
+    {
+        id: 2,
+        backgroundImg: backgroundImgDark,
+        logoImg: buttonDark,
+        gameNameStyles: 'dark'
+    }
+]
 
 const PLAYERS = {
     'X': 'Player 1',
@@ -21,31 +42,35 @@ const INITIAL_GAME_BOARD = [
     [null, null, null]
 ];
 
-function deriveActivePlayer(gameTurns){
-    let currentPlayer = "X";
+export const FIRST_PLAYER = "X";
+export const SECOND_PLAYER = "O"
 
-    if(gameTurns.length > 0 && gameTurns[0].player === "X" ){
-        currentPlayer = "O";
+function deriveActivePlayer(gameTurns) {
+    let currentPlayer = FIRST_PLAYER;
+
+    if (gameTurns.length > 0 && gameTurns[0].player === FIRST_PLAYER) {
+        currentPlayer = SECOND_PLAYER;
     }
     return currentPlayer;
 }
 
 function deriveGameBoard(gameTurns) {
-    let gameBoard = [...INITIAL_GAME_BOARD.map(array =>[...array])];
+    let gameBoard = [...INITIAL_GAME_BOARD.map(array => [...array])];
 
-    for(const turn of gameTurns){
+    for (const turn of gameTurns) {
+        debugger
         const {square, player} = turn;
-        const { row, col } = square;
+        const {row, col} = square;
 
         gameBoard[row][col] = player;
     }
     return gameBoard;
 }
 
-function deriveWinner(gameBoard, players){
+function deriveWinner(gameBoard, players) {
     let winner = null; //переменная победителя
 
-    for(const combination of WINNING_COMBINATIONS){
+    for (const combination of WINNING_COMBINATIONS) {
         const firstSquareSymbol =
             gameBoard[combination[0].row][combination[0].column];
         const secondSquareSymbol =
@@ -53,10 +78,10 @@ function deriveWinner(gameBoard, players){
         const thirdSquareSymbol =
             gameBoard[combination[2].row][combination[2].column];
 
-        if(firstSquareSymbol &&
+        if (firstSquareSymbol &&
             firstSquareSymbol === secondSquareSymbol &&
             firstSquareSymbol === thirdSquareSymbol
-        ){
+        ) {
             winner = players[firstSquareSymbol];
         }
     }
@@ -70,18 +95,19 @@ function App() {
         gamesToWin: "3",
         themId: "1"
     });
-    const [players, setPlayers]=useState(PLAYERS);
+    const [players, setPlayers] = useState(PLAYERS);
     const [gameTurns, setGameTurns] = useState([]);
-    const [useTheme, setUseTheme]=useState(null);
+    const [useTheme, setUseTheme] = useState(themes[0]);
 
     const activePlayer = deriveActivePlayer(gameTurns);
     const gameBoard = deriveGameBoard(gameTurns); //игровые ходы
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
 
-    useEffect(()=>{
+    useEffect(() => {
         handlerSettingsButton();
-    },[])
+    }, [])
+
     function handlerSettingsButton() {
         setSettings(prevSettings => {
             return {
@@ -90,6 +116,7 @@ function App() {
             }
         })
     }
+
     function handlerChangeSettings(settings) {
         setSettings(prevSettings => {
             return {
@@ -107,7 +134,7 @@ function App() {
 
             const updatedTurns = [
                 {
-                    square:{ row: rowIndex, col: colIndex },
+                    square: {row: rowIndex, col: colIndex},
                     player: currentPlayer
                 },
                 ...prevTurns,
@@ -116,7 +143,7 @@ function App() {
         });
     }
 
-    function handleRestart(){
+    function handleRestart() {
         setGameTurns([]);
     }
 
@@ -129,41 +156,39 @@ function App() {
         });
     }
 
-  return (
-    <main>
-        <button className="menu" onClick={handlerSettingsButton}>
-            <img src={settingsIcon} alt="menu" className="menu__img"/>
-        </button>
-        <Menu onSetUseTheme={setUseTheme}/>
-      <div id="game-container" className={styles.game_container}>
-          {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
-        <ol id="players" className={styles.highlight_player}>
-          <Player
-              initialName={PLAYERS.X}
-              symbol={useTheme.symbol1}
-              playerIcon = {useTheme.playerIcon1}
-              isActive={activePlayer === "X"}
-              onChangeName = {handlePlayerNameChange}
-          />
-          <Player
-              initialName={PLAYERS.O}
-              symbol={useTheme.symbol2}
-              playerIcon = {useTheme.playerIcon2}
-              isActive={activePlayer === "O"}
-              onChangeName = {handlePlayerNameChange}
-          />
-        </ol>
-          {(winner || hasDraw) && (
-              <GameOver winner={winner} onRestart={handleRestart} />
-          )}
-          <GameBoard
-              onSelectSquare={handleSelectSquare}
-              board={gameBoard}
-          />
-      </div>
-      <Log turns={gameTurns}/>
-    </main>
-  );
+    return (
+        <main>
+            <button className="menu" onClick={handlerSettingsButton}>
+                <img src={settingsIcon} alt="menu" className="menu__img"/>
+            </button>
+            <Menu onSetUseTheme={setUseTheme}/>
+            <div id="game-container" className={styles.game_container}>
+                {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
+                <ol id="players" className={styles.highlight_player}>
+                    <Player
+                        initialName={PLAYERS.X}
+                        symbol='X'
+                        isActive={activePlayer === "X"}
+                        onChangeName={handlePlayerNameChange}
+                    />
+                    <Player
+                        initialName={PLAYERS.O}
+                        symbol='O'
+                        isActive={activePlayer === "O"}
+                        onChangeName={handlePlayerNameChange}
+                    />
+                </ol>
+                {(winner || hasDraw) && (
+                    <GameOver winner={winner} onRestart={handleRestart}/>
+                )}
+                <GameBoard
+                    onSelectSquare={handleSelectSquare}
+                    board={gameBoard}
+                />
+            </div>
+            <Log turns={gameTurns}/>
+        </main>
+    );
 }
 
 export default App
