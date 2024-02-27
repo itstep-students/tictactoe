@@ -15,14 +15,18 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
+body {
+    background-attachment: fixed;
+}
+
 header {
     text-align: center;
 }
 
 header img {
-    width: 8rem;
+    width: 6rem;
     object-fit: contain;
-    margin: 2rem auto 1rem auto;
+    margin: 1rem auto 1rem auto;
     border-radius: 50%;
     filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
 }
@@ -34,9 +38,75 @@ h1 {
     font-size: 4rem;
     margin: 0 auto 0.5rem auto;
     display: block;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
     font-weight: bold;
+}
+
+.menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: inline-block;
+    border-radius: 50px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+
+#players {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+#players li {
+    display: flex;
+    align-items: center;
+    width: 40%;
+    border: 2px solid transparent;
+}
+
+#players.highlight_player li.active {
+    border-color: #f6e35a;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+#players.highlight_player li.active .player_name,
+#players.highlight_player li.active .player_symbol {
+    color: #f6e35a;
+}
+
+#players button {
+    width: 3rem;
+    border: none;
+    background: none;
+    color: #c3ba78;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+    text-align: center;
+}
+
+#players button:hover {
+    color: #f8ca31;
+}
+
+.menu__img {
+    background-color: #383624;
+    border-radius: 50px;
+    padding: 5px;
+    width: 49px;
+}
+
+
+.menu__img:active {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    transform: rotate(90deg);
 }
 
 ol {
@@ -53,11 +123,6 @@ ol {
     transition: color 100ms linear;
 }
 
-/*Вопрос */
-.players.highlight_player li.active .player_name,
-.players.highlight_player li.active .player_symbol {
-    color: #f6e35a;
-}
 
 /*#game-hints {*/
 /*  text-align: center;*/
@@ -150,24 +215,3 @@ ol {
     }
 }
 
-.menu {
-    margin: 0;
-    position: absolute;
-    right: 230px;
-    border-radius: 50px;
-    cursor: pointer;
-    background: none;
-    border: none;
-}
-
-.menu__img {
-    background-color: #383624;
-    border-radius: 50px;
-    padding: 5px;
-    width: 49px;
-}
-
-.menu__img:active {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    transform: rotate(90deg);
-}

@@ -1,12 +1,15 @@
 import {useEffect, useState} from "react";
-import Start from "./components/Start";
+
 import styles from './App.module.css';
+import './index.css';
+
+import Start from "./components/Start/Start";
 import Player from "./components/Player/Player";
 import GameBoard from "./components/GameBoard/GameBoard";
 import Log from "./components/Log/Log";
 import GameOver from "./components/GameOver/GameOver";
 import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
-import settingsIcon from './assets/setting.png'
+import settingsIcon from './assets/setting.png';
 
 
 import buttonLight from '/game-logo.png';
@@ -93,11 +96,11 @@ function App() {
         isSettingsOpen: false,
         opponents: 'Computer',
         gamesToWin: "3",
-        themId: "1"
+        themeId: 1
     });
+
     const [players, setPlayers] = useState(PLAYERS);
     const [gameTurns, setGameTurns] = useState([]);
-    const [useTheme, setUseTheme] = useState(themes[0]);
 
     const activePlayer = deriveActivePlayer(gameTurns);
     const gameBoard = deriveGameBoard(gameTurns); //игровые ходы
@@ -121,8 +124,8 @@ function App() {
         setSettings(prevSettings => {
             return {
                 ...prevSettings,
+                isSettingsOpen: false,
                 ...settings,
-                isSettingsOpen: false
             }
         })
     }
@@ -158,13 +161,15 @@ function App() {
 
     return (
         <main>
-            <button className="menu" onClick={handlerSettingsButton}>
-                <img src={settingsIcon} alt="menu" className="menu__img"/>
-            </button>
-            <Menu onSetUseTheme={setUseTheme}/>
             <div id="game-container" className={styles.game_container}>
-                {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
-                <ol id="players" className={styles.highlight_player}>
+                <Menu settings={settings}/>
+
+                <button className="menu" onClick={handlerSettingsButton}>
+                    <img src={settingsIcon} alt="menu" className="menu__img"/>
+                </button>
+                {settings.isSettingsOpen && <Start settings={settings} onSettings={handlerChangeSettings}/>}
+
+                <ol id="players" className="highlight_player">
                     <Player
                         initialName={PLAYERS.X}
                         symbol='X'
@@ -178,14 +183,18 @@ function App() {
                         onChangeName={handlePlayerNameChange}
                     />
                 </ol>
+
                 {(winner || hasDraw) && (
                     <GameOver winner={winner} onRestart={handleRestart}/>
                 )}
+
                 <GameBoard
                     onSelectSquare={handleSelectSquare}
                     board={gameBoard}
                 />
+
             </div>
+
             <Log turns={gameTurns}/>
         </main>
     );
