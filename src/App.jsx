@@ -17,7 +17,6 @@ import buttonDark from '/logo_1.png';
 
 import backgroundImgLight from '/bg-pattern-light.png';
 import backgroundImgDark from '/bg-pattern-dark.png';
-import Menu from "./components/Menu/Menu";
 
 export const themes = [
     {
@@ -38,6 +37,19 @@ const PLAYERS = {
     'X': 'Player 1',
     'O': 'Player 2'
 };
+
+//Игра с компьютером
+// const playersСomputer = {
+//     CPU: {
+//         SYM: "O",
+//         NAME: "Сomputer",
+//     },
+//     PLAYER: {
+//         SYM: "X",
+//         NAME: "PLAYER",
+//     },
+// };
+
 
 const INITIAL_GAME_BOARD = [
     [null, null, null],
@@ -162,8 +174,6 @@ function App() {
     return (
         <main>
             <div id="game-container" className={styles.game_container}>
-                <Menu settings={settings}/>
-
                 <button className="menu" onClick={handlerSettingsButton}>
                     <img src={settingsIcon} alt="menu" className="menu__img"/>
                 </button>

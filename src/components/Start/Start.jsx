@@ -1,12 +1,36 @@
-import {useState} from "react";
-
+import {useEffect, useState} from "react";
+import {themes} from "../../App.jsx";
 
 import styles from './Start.module.css';
 
 
 export default function Start({onSettings, settings}) {
+
     const [opponents, setOpponents] = useState('Computer');
     const [gamesToWin, setGamesToWin] = useState("3");
+
+
+    const [styleColor, setStyleColor] = useState("dark");
+
+    useEffect(() => {
+        const themeTmp = themes.find(theme => theme.id === settings.themeId);
+
+        const imgElem = document.getElementById("img-logo");
+        const gameName = document.getElementById('game-name');
+
+        gameName.className = '';
+        gameName.classList.add(themeTmp.gameNameStyles)
+
+        imgElem.src = themeTmp.logoImg;
+
+        document.body.style.backgroundImage = `url(${themeTmp.backgroundImg})`;
+
+        if (styleColor !== "light") {
+            setStyleColor("light");
+        } else {
+            setStyleColor("dark");
+        }
+    }, [settings.themeId]);
 
     function handlerOpponentsChanged(e) {
         setOpponents(e.target.value);
