@@ -7,7 +7,6 @@ import styles from './Start.module.css';
 export default function Start({onSettings, settings}) {
 
     const [opponents, setOpponents] = useState('Computer');
-    const [gamesToWin, setGamesToWin] = useState("3");
 
 
     const [styleColor, setStyleColor] = useState("dark");
@@ -37,7 +36,10 @@ export default function Start({onSettings, settings}) {
     }
 
     function handlerGamesToWinChanged(e) {
-        setGamesToWin(e.target.value);
+        onSettings({
+            gamesToWin: Number(e.target.value),
+            isSettingsOpen: true
+        })
     }
 
     function handlerThemIdChanged(e) {
@@ -49,8 +51,7 @@ export default function Start({onSettings, settings}) {
 
     function handlerSaveSettings() {
         onSettings({
-            opponents,
-            gamesToWin
+            opponents
         });
     }
 
@@ -76,17 +77,17 @@ export default function Start({onSettings, settings}) {
                 <div className={styles.label__wrapper}>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="3" name="number"
-                               checked={gamesToWin === "3"} onChange={handlerGamesToWinChanged}/>
+                               checked={settings.gamesToWin === 3} onChange={handlerGamesToWinChanged}/>
                         <span className={styles.span}>3</span>
                     </label>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="6" name="number"
-                               checked={gamesToWin === "6"} onChange={handlerGamesToWinChanged}/>
-                        <span className={styles.span}>7</span>
+                               checked={settings.gamesToWin === 6} onChange={handlerGamesToWinChanged}/>
+                        <span className={styles.span}>6</span>
                     </label>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="9" name="number"
-                               checked={gamesToWin === "9"} onChange={handlerGamesToWinChanged}/>
+                               checked={settings.gamesToWin === 9} onChange={handlerGamesToWinChanged}/>
                         <span className={styles.span}>9</span>
                     </label>
                 </div>

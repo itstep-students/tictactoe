@@ -17,6 +17,7 @@ import buttonDark from '/logo_1.png';
 
 import backgroundImgLight from '/bg-pattern-light.png';
 import backgroundImgDark from '/bg-pattern-dark.png';
+import TableOfWinners from "./components/TableOfWinners/table-of-winners.jsx";
 
 export const themes = [
     {
@@ -89,15 +90,17 @@ function deriveWinner(gameBoard, players) {
     return winner;
 }
 
+let resultGames = [];
+
 function App() {
     const [settings, setSettings] = useState({
         isSettingsOpen: false,
         opponents: 'Computer',
-        gamesToWin: "3",
-        themeId: 1
+        gamesToWin: 3,
+        themeId: 1,
+        openStatistic: false
     });
     const [players, setPlayers] = useState(PLAYERS);
-    // const [currentGame, setCurrentGame] = useState(0);
     const [gameTurns, setGameTurns] = useState([]);
 
     const activePlayer = deriveActivePlayer(gameTurns);
@@ -105,6 +108,7 @@ function App() {
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
     // let symbol = 'X';
+
 
     useEffect(() => {
         handlerSettingsButton();
@@ -224,6 +228,21 @@ function App() {
 
     function handleRestart() {
         setGameTurns([]);
+        if (settings.gamesToWin <= resultGames.length) {
+            setSettings(prevState => ({
+                ...prevState,
+                openStatistic: true
+            }))
+        }
+    }
+
+    function handleResetAllGame() {
+        setGameTurns([]);
+        resultGames = [];
+        setSettings(prevState => ({
+            ...prevState,
+            openStatistic: false
+        }))
     }
 
     function handlePlayerNameChange(symbol, newName) {
@@ -235,6 +254,19 @@ function App() {
         });
     }
 
+    if (winner) {
+        resultGames.push({
+            gameNumber: resultGames.length + 1,
+            winner: winner,
+            symbol: gameTurns[0].player
+        });
+    }
+
+    let resultContent = null;
+    if (settings.gamesToWin <= resultGames.length) {
+        resultContent = <TableOfWinners resultGames={resultGames} winner={winner} isFinishGame={true}/>;
+    }
+
     return (
         <main>
             <div id="game-container" className={styles.game_container}>
@@ -242,7 +274,7 @@ function App() {
                     <img src={settingsIcon} alt="menu" className="menu__img"/>
                 </button>
                 {settings.isSettingsOpen && <Start settings={settings} onSettings={handlerChangeSettings}/>}
-
+                {settings.openStatistic && resultContent}
                 <ol id="players" className="highlight_player">
                     <Player
                         initialName={PLAYERS.X}
