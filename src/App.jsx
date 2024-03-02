@@ -18,31 +18,34 @@ const INITIAL_GAME_BOARD = [
     [null, null, null]
 ];
 
-function deriveActivePlayer(gameTurns){
+function deriveActivePlayer(gameTurns) {
     let currentPlayer = "X";
 
-    if(gameTurns.length > 0 && gameTurns[0].player === "X" ){
+    if (gameTurns.length > 0 && gameTurns[0].player === "X") {
         currentPlayer = "O";
     }
     return currentPlayer;
 }
 
 function deriveGameBoard(gameTurns) {
-    let gameBoard = [...INITIAL_GAME_BOARD.map(array =>[...array])];
+    let gameBoard = [...INITIAL_GAME_BOARD.map(array => [...array])];
 
-    for(const turn of gameTurns){
+    for (const turn of gameTurns) {
         const {square, player} = turn;
-        const { row, col } = square;
+        const {row, col} = square;
 
         gameBoard[row][col] = player;
     }
     return gameBoard;
 }
-
-function deriveWinner(gameBoard, players){
+// let winPlayer = {
+//     "X": 0,
+//     "O": 0
+// }
+function deriveWinner(gameBoard, players) {
     let winner = null; //переменная победителя
 
-    for(const combination of WINNING_COMBINATIONS){
+    for (const combination of WINNING_COMBINATIONS) {
         const firstSquareSymbol =
             gameBoard[combination[0].row][combination[0].column];
         const secondSquareSymbol =
@@ -50,10 +53,10 @@ function deriveWinner(gameBoard, players){
         const thirdSquareSymbol =
             gameBoard[combination[2].row][combination[2].column];
 
-        if(firstSquareSymbol &&
+        if (firstSquareSymbol &&
             firstSquareSymbol === secondSquareSymbol &&
             firstSquareSymbol === thirdSquareSymbol
-        ){
+        ) {
             winner = players[firstSquareSymbol];
         }
     }
@@ -67,16 +70,92 @@ function App() {
         gamesToWin: "3",
         themId: "1"
     });
-    const [players, setPlayers]=useState(PLAYERS);
+    const [players, setPlayers] = useState(PLAYERS);
+    // const [currentGame, setCurrentGame] = useState(0);
     const [gameTurns, setGameTurns] = useState([]);
     const activePlayer = deriveActivePlayer(gameTurns);
     const gameBoard = deriveGameBoard(gameTurns); //игровые ходы
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
+    // let symbol = 'X';
 
-    useEffect(()=>{
-        handlerSettingsButton();
-    },[])
+    // useEffect(()=>{
+    //     winPlayer={
+    //         ...winPlayer,
+    //         [symbol]: winPlayer[symbol]+1;  // "X": 0+1
+    //     }
+    //     if(){
+    //         const playerWin = winPlayer.X>winPlayer.O ? Player.X : Player.O;
+    //     }
+    //
+    // }, [currentGame])
+    // useEffect(() => {
+    //     winPlayer.push(winner);
+    //     if (String(currentGame) >= settings.gamesToWin) {
+    //         const firstWinner = winPlayer[0];
+    //         const gameWon = winPlayer.reduce((item)=>{item===firstWinner},0);
+    //         // win="X"
+    //         // PLAYER[win] - победил
+    //         setCurrentGame(0);
+    //     }
+    // }, [currentGame]);
+    // useEffect(()=>{
+    //     winPlayer={
+    //         ...winPlayer,
+    //         [symbol]: winPlayer[symbol]+1  // "X": 0+1
+    //     }
+    //     if(winPlayer.X > winPlayer.Y){
+    //         const playerWin = PLAYERS.X;
+    //     } else {
+    //         const playerWin = PLAYERS.Y;
+    //     }
+    // }, [currentGame])
+    // useEffect(() => {
+    //     if (currentGame >= parseInt(settings.gamesToWin)) {
+    //         const playerWin = winPlayer.X > winPlayer.O ? PLAYERS.X : PLAYERS.O;
+    //         console.log(`Player ${playerWin} won the game!`);
+    //     }
+    // }, [currentGame]);
+    //
+    // useEffect(() => {
+    //     winPlayer = {
+    //         ...winPlayer,
+    //         [symbol]: winPlayer[symbol] + 1
+    //     };
+    //     if (winPlayer.X > winPlayer.O) {
+    //         const playerWin = PLAYERS.X;
+    //         console.log(`Player ${playerWin} is currently winning!`);
+    //     } else {
+    //         const playerWin = PLAYERS.O;
+    //         console.log(`Player ${playerWin} is currently winning!`);
+    //     }
+    // }, [currentGame]);
+    // const [gamesPlayed, setGamesPlayed] = useState(0); // Track the number of games played
+    //
+    // useEffect(() => {
+    //     if (winner || hasDraw) {
+    //         setGamesPlayed(prevGamesPlayed => prevGamesPlayed + 1); // Увеличение количества сыгранных игр при наличии победителя или ничьей
+    //     }
+    // }, [winner, hasDraw]);
+    //
+    // useEffect(() => {
+    //     if (gamesPlayed >= parseInt(settings.gamesToWin)) { // Проверка, равно ли количество сыгранных игр или больше указанного количества игр для победы
+    //         const firstWinner = gameTurns[0].player; // Предполагая, что gameTurns[0] всегда содержит первого игрока
+    //         const gameWon = gameTurns.filter(turn => turn.player === firstWinner).length; // Подсчет количества побед первого игрока
+    //         // Отображение результата в зависимости от количества побед
+    //         if (String(gameWon) >= parseInt(settings.gamesToWin)) {
+    //             alert(`${PLAYERS[firstWinner]} выиграл серию!`);
+    //         } else {
+    //             alert(`Серия закончилась в ничью.`);
+    //         }
+    //         setGamesPlayed(0); // Сброс количества сыгранных игр
+    //     }
+    // }, [gamesPlayed, gameTurns, settings.gamesToWin]);
+    //
+    // useEffect(() => {
+    //     handlerSettingsButton();
+    // }, [])
+
     function handlerSettingsButton() {
         setSettings(prevSettings => {
             return {
@@ -85,6 +164,7 @@ function App() {
             }
         })
     }
+
     function handlerChangeSettings(settings) {
         setSettings(prevSettings => {
             return {
@@ -102,7 +182,7 @@ function App() {
 
             const updatedTurns = [
                 {
-                    square:{ row: rowIndex, col: colIndex },
+                    square: {row: rowIndex, col: colIndex},
                     player: currentPlayer
                 },
                 ...prevTurns,
@@ -111,7 +191,7 @@ function App() {
         });
     }
 
-    function handleRestart(){
+    function handleRestart() {
         setGameTurns([]);
     }
 
@@ -124,36 +204,36 @@ function App() {
         });
     }
 
-  return (
-    <main>
-        <button className="menu" onClick={handlerSettingsButton}><img src={settingsIcon} alt="menu" className="menu__img"/></button>
-      <div id="game-container">
-          {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
-        <ol id="players" className="highlight-player">
-          <Player
-              initialName={PLAYERS.X}
-              symbol="X"
-              isActive={activePlayer === "X"}
-              onChangeName = {handlePlayerNameChange}
-          />
-          <Player
-              initialName={PLAYERS.O} //ОШИБКА .0
-              symbol="O"
-              isActive={activePlayer === "O"}
-              onChangeName = {handlePlayerNameChange}
-          />
-        </ol>
-          {(winner || hasDraw) && (
-              <GameOver winner={winner} onRestart={handleRestart} />
-          )}
-          <GameBoard
-              onSelectSquare={handleSelectSquare}
-              board={gameBoard}
-          />
-      </div>
-      <Log turns={gameTurns}/>
-    </main>
-  );
+    return (
+        <main>
+            <button className="menu" onClick={handlerSettingsButton}><img src={settingsIcon} alt="menu" className="menu__img"/></button>
+            <div id="game-container">
+                {settings.isSettingsOpen && <Start onSettings={handlerChangeSettings}/>}
+                <ol id="players" className="highlight-player">
+                    <Player
+                        initialName={PLAYERS.X}
+                        symbol="X"
+                        isActive={activePlayer === "X"}
+                        onChangeName={handlePlayerNameChange}
+                    />
+                    <Player
+                        initialName={PLAYERS.O} //ОШИБКА .0
+                        symbol="O"
+                        isActive={activePlayer === "O"}
+                        onChangeName={handlePlayerNameChange}
+                    />
+                </ol>
+                {(winner || hasDraw) && (
+                    <GameOver winner={winner} onRestart={handleRestart}/>
+                )}
+                <GameBoard
+                    onSelectSquare={handleSelectSquare}
+                    board={gameBoard}
+                />
+            </div>
+            <Log turns={gameTurns}/>
+        </main>
+    );
 }
 
 export default App
