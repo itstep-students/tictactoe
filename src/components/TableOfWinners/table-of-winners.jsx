@@ -1,9 +1,5 @@
 import styles from './table-of-winners.module.css';
-// interface IGame{
-//     gameNumber: number;
-//     winner: string;
-//     symbol: string;
-// }
+
 
 export default function TableOfWinners({resultGames, winner}) {
     return (
