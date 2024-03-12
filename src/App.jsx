@@ -121,7 +121,7 @@ function App() {
     const hasDraw = gameTurns.length === 9 && !winner;
     const playerToWon = getPlayerToWon(resultGames)
 
-    const [scores, setScores] = useState({'Player 1': 0, 'Player 2': 0});
+    const [scores, setScores] = useState({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
     const [seriesWinner, setSeriesWinner] = useState(null);
     const [isSeriesEnded, setIsSeriesEnded] = useState(false);
     const [gamesPlayed, setGamesPlayed] = useState(0);
@@ -192,7 +192,7 @@ function App() {
         setSettings(prevSettings => {
             if(settings.gamesToWin && prevSettings.gamesToWin !==settings.gamesToWin){
                 resultGames = [];
-                setScores({'Player 1': 0, 'Player 2': 0});
+                setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
             }
             return {
                 ...prevSettings,
@@ -232,7 +232,7 @@ function App() {
             setGameTurns([]);
             if (resultGames.length === settings.gamesToWin) {
                 resultGames = [];
-                setScores({'Player 1': 0, 'Player 2': 0});
+                setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
                 setSettings(prevSettings => ({
                         ...prevSettings,
                         openStatistic: false
@@ -244,6 +244,7 @@ function App() {
 
     function handlePlayerNameChange(symbol, newName) {
         setPlayers(prevPlayers => {
+            PLAYERS[symbol] = newName;
             return {
                 ...prevPlayers,
                 [symbol]: newName
@@ -282,6 +283,7 @@ function App() {
 
                 {(winner || hasDraw) && (
                     <GameOver winner={winner} scores={scores} seriesWinner={seriesWinner}
+                              players={PLAYERS}
                               onRestart={handleRestart}
                               isSeriesEnded={isSeriesEnded}/>
                 )}
