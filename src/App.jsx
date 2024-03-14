@@ -8,9 +8,9 @@ import Player from "./components/Player/Player";
 import GameBoard from "./components/GameBoard/GameBoard";
 import Log from "./components/Log/Log";
 import GameOver from "./components/GameOver/GameOver";
-import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
-import settingsIcon from './assets/setting.png';
 
+import {WINNING_COMBINATIONS} from "./components/winning-combinations";
+import settingsIcon from './assets/setting.png';
 
 import buttonLight from '/game-logo.png';
 import buttonDark from '/logo_1.png';
@@ -33,32 +33,39 @@ export const themes = [
     }
 ]
 
-const PLAYERS = {
-    'X': 'Player 1',
-    'O': 'Player 2'
-};
-
-//Игра с компьютером
-// const playersСomputer = {
-//     CPU: {
-//         SYM: "O",
-//         NAME: "Сomputer",
-//     },
-//     PLAYER: {
-//         SYM: "X",
-//         NAME: "PLAYER",
-//     },
-// };
-
-
 const INITIAL_GAME_BOARD = [
     [null, null, null],
     [null, null, null],
     [null, null, null]
 ];
 
+const PLAYERS = {
+    'X': 'Player',
+    'O': 'Friend'
+};
+
+localStorage.setItem("PLAYERS",
+    JSON.stringify({currentPlayer: "Computer", lastPlayer: "Friend"})
+);
+console.log(JSON.parse(localStorage.getItem("PLAYERS")).currentPlayer);
+console.log(JSON.parse(localStorage.getItem("PLAYERS")).lastPlayer);
+
 export const FIRST_PLAYER = "X";
-export const SECOND_PLAYER = "O"
+export const SECOND_PLAYER = "O";
+export const COMPUTER = "Computer";
+
+function playComputer() {
+    const emptyIndexes = [];
+    INITIAL_GAME_BOARD.forEach((row, rowIndex) => {
+        row.forEach((col, colIndex) => {
+            if (col === "") {
+                emptyIndexes.push([rowIndex, colIndex]);
+            }
+        });
+    });
+    const randomIndex = Math.floor(Math.random() * emptyIndexes.length);
+    return emptyIndexes[randomIndex];
+}
 
 function deriveActivePlayer(gameTurns) {
     let currentPlayer = FIRST_PLAYER;
@@ -73,7 +80,6 @@ function deriveGameBoard(gameTurns) {
     let gameBoard = [...INITIAL_GAME_BOARD.map(array => [...array])];
 
     for (const turn of gameTurns) {
-        debugger
         const {square, player} = turn;
         const {row, col} = square;
 
@@ -118,6 +124,13 @@ function App() {
     const gameBoard = deriveGameBoard(gameTurns); //игровые ходы
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
+
+    useEffect(() => {
+        if (settings.opponents === COMPUTER && players.O === COMPUTER) {
+            const [rowIndex, colIndex] = playComputer();
+            handleSelectSquare(rowIndex, colIndex);
+        }
+    }, [players]);
 
     useEffect(() => {
         handlerSettingsButton();

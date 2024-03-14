@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {themes} from "../../App.jsx";
+import {themes} from "../../App";
 
 import styles from './Start.module.css';
 
@@ -81,7 +81,7 @@ export default function Start({onSettings, settings}) {
                     </label>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="6" name="number"
-                               checked={gamesToWin === "6"} onChange={handlerGamesToWinChanged}/>
+                               checked={gamesToWin === "7"} onChange={handlerGamesToWinChanged}/>
                         <span className={styles.span}>7</span>
                     </label>
                     <label className={styles.label}>
