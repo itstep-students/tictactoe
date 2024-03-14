@@ -7,7 +7,6 @@ import styles from './Start.module.css';
 export default function Start({onSettings, settings}) {
 
     const [opponents, setOpponents] = useState('Computer');
-    const [gamesToWin, setGamesToWin] = useState("3");
 
 
     const [styleColor, setStyleColor] = useState("dark");
@@ -37,7 +36,10 @@ export default function Start({onSettings, settings}) {
     }
 
     function handlerGamesToWinChanged(e) {
-        setGamesToWin(e.target.value);
+        onSettings({
+            gamesToWin: Number(e.target.value),
+            isSettingsOpen: true
+        })
     }
 
     function handlerThemIdChanged(e) {
@@ -49,8 +51,7 @@ export default function Start({onSettings, settings}) {
 
     function handlerSaveSettings() {
         onSettings({
-            opponents,
-            gamesToWin
+            opponents
         });
     }
 
@@ -76,17 +77,22 @@ export default function Start({onSettings, settings}) {
                 <div className={styles.label__wrapper}>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="3" name="number"
-                               checked={gamesToWin === "3"} onChange={handlerGamesToWinChanged}/>
+                               checked={settings.gamesToWin === 3} onChange={handlerGamesToWinChanged}/>
                         <span className={styles.span}>3</span>
                     </label>
                     <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="6" name="number"
-                               checked={gamesToWin === "7"} onChange={handlerGamesToWinChanged}/>
+                        <input className={styles.input} type="radio" value="5" name="number"
+                               checked={settings.gamesToWin === 5} onChange={handlerGamesToWinChanged}/>
+                        <span className={styles.span}>5</span>
+                    </label>
+                    <label className={styles.label}>
+                        <input className={styles.input} type="radio" value="7" name="number"
+                               checked={settings.gamesToWin === 7} onChange={handlerGamesToWinChanged}/>
                         <span className={styles.span}>7</span>
                     </label>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="9" name="number"
-                               checked={gamesToWin === "9"} onChange={handlerGamesToWinChanged}/>
+                               checked={settings.gamesToWin === 9} onChange={handlerGamesToWinChanged}/>
                         <span className={styles.span}>9</span>
                     </label>
                 </div>
@@ -97,19 +103,16 @@ export default function Start({onSettings, settings}) {
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="1" name="background"
                                checked={settings.themeId === 1} onChange={handlerThemIdChanged}/>
-                        <span className={styles.span}>Theme 1</span>
+                        <span className={styles.span}>Theme1</span>
                     </label>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="2" name="background"
                                checked={settings.themeId === 2} onChange={handlerThemIdChanged}/>
-                        <span className={styles.span}>Theme 2</span>
+                        <span className={styles.span}>Theme2</span>
                     </label>
                 </div>
             </div>
-            <div className={styles.button__wrapper}>
                 <button className={styles.start__button} onClick={handlerSaveSettings}>Start new game</button>
-                <button className={styles.resume__button} onClick={handlerSaveSettings}>Resume game</button>
-            </div>
         </div>
     )
 }

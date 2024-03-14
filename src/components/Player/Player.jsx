@@ -19,11 +19,9 @@ export default function Player({initialName, symbol, isActive, onChangeName}) {
     }
 
     let editablePlayerName = <span className={styles.player_name}>{playerName}</span>;
-    // let btnCaption = 'Edit';
 
     if (isEditing) {
         editablePlayerName = <input type="text" required value={playerName} onChange={handleChange}/>;
-        // btnCaption = 'Save';
     }
 
     return (

@@ -1,4 +1,4 @@
-.settings__wrapper {
+.winners {
     position: absolute;
     top: 0;
     left: 0;
@@ -24,15 +24,7 @@
     margin: 0;
 }
 
-.topic {
-    padding-bottom: 15px;
-}
-
-.input {
-    display: none;
-}
-
-.label {
+.congratulations {
     font-size: 2.5rem;
     text-align: center;
     color: #e1dec7;
@@ -40,31 +32,23 @@
     justify-content: center;
     display: flex;
     width: 155px;
-}
-
-.label:hover {
-    font-weight: bold;
     cursor: pointer;
-    text-shadow: 0 0 8px rgb(193, 161, 231);
 }
-
-.label__wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
+.table__wrapper {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    font-size: 20px;
 }
-
-.button {
-    display: block;
-    margin: 0 auto;
-    font-size: 1.5rem;
-    border: 2px solid #fcd256;
-    color: #fcd256;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s, color 0.2s;
-    box-shadow: 0 0 8px rgba(255, 187, 0, 0.4);
+table {
+    border-collapse: collapse;
+}
+th {
+    border: 1px solid rgba(252, 210, 86, 0.52);
+    padding: 7px;
+}
+td {
+    border: 1px solid rgba(252, 210, 86, 0.52);
 }
 
 .start__button {
@@ -86,8 +70,4 @@
     color: #3f3b00;
     transform: scale(1.1);
     box-shadow: 0 0 20px rgba(255, 187, 0, 0.8);
-}
-
-.input[type='radio']:checked ~ .span {
-    text-shadow: 0 0 8px rgb(193, 161, 231);
 }
