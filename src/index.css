@@ -1,4 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css2?family=Caprasimo&family=Roboto+Slab:wght@400;700&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&family=Roboto+Slab:wght@400;700&display=swap');
 
 * {
     box-sizing: border-box;
@@ -124,32 +124,6 @@ ol {
 }
 
 
-/*#game-hints {*/
-/*  text-align: center;*/
-/*  color: #46432f;*/
-/*}*/
-
-/*#game-hints h2 {*/
-/*  font-family: 'Caprasimo', cursive;*/
-/*  font-size: 2rem;*/
-/*  margin: 0;*/
-/*}*/
-
-/*#game-hints ul {*/
-/*  list-style: none;*/
-/*  padding: 0;*/
-/*  margin: 0;*/
-/*}*/
-
-/*#game-hints button {*/
-/*  cursor: pointer;*/
-/*  border: none;*/
-/*  background: transparent;*/
-/*  color: #23221f;*/
-/*  font: inherit;*/
-/*  margin-top: 1.5rem;*/
-/*}*/
-
 @keyframes slide-in-from-left {
     0% {
         opacity: 0;
@@ -200,7 +174,6 @@ ol {
     }
 }
 
-/* Fancy animation for showing the "Game Over" element */
 @keyframes pop-in {
     0% {
         transform: scale(0);

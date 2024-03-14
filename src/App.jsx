@@ -17,6 +17,7 @@ import buttonDark from '/logo_1.png';
 
 import backgroundImgLight from '/bg-pattern-light.png';
 import backgroundImgDark from '/bg-pattern-dark.png';
+import TableOfWinners from "./components/TableOfWinners/table-of-winners.jsx";
 
 export const themes = [
     {
@@ -37,19 +38,6 @@ const PLAYERS = {
     'X': 'Player 1',
     'O': 'Player 2'
 };
-
-//Игра с компьютером
-// const playersСomputer = {
-//     CPU: {
-//         SYM: "O",
-//         NAME: "Сomputer",
-//     },
-//     PLAYER: {
-//         SYM: "X",
-//         NAME: "PLAYER",
-//     },
-// };
-
 
 const INITIAL_GAME_BOARD = [
     [null, null, null],
@@ -73,7 +61,6 @@ function deriveGameBoard(gameTurns) {
     let gameBoard = [...INITIAL_GAME_BOARD.map(array => [...array])];
 
     for (const turn of gameTurns) {
-        debugger
         const {square, player} = turn;
         const {row, col} = square;
 
@@ -83,7 +70,7 @@ function deriveGameBoard(gameTurns) {
 }
 
 function deriveWinner(gameBoard, players) {
-    let winner = null; //переменная победителя
+    let winner = null;
 
     for (const combination of WINNING_COMBINATIONS) {
         const firstSquareSymbol =
@@ -98,19 +85,33 @@ function deriveWinner(gameBoard, players) {
             firstSquareSymbol === thirdSquareSymbol
         ) {
             winner = players[firstSquareSymbol];
+            break;
         }
     }
     return winner;
+}
+
+let resultGames = [];
+
+function getPlayerToWon(resultGames) {
+    const result = resultGames.reduce((acc, item) => {
+        ++acc[item.symbol];
+        return acc;
+    }, {
+        [FIRST_PLAYER]: 0,
+        [SECOND_PLAYER]: 0
+    })
+    return result[FIRST_PLAYER] > result[SECOND_PLAYER] ? PLAYERS[FIRST_PLAYER] : PLAYERS[SECOND_PLAYER];
 }
 
 function App() {
     const [settings, setSettings] = useState({
         isSettingsOpen: false,
         opponents: 'Computer',
-        gamesToWin: "3",
-        themeId: 1
+        gamesToWin: 3,
+        themeId: 1,
+        openStatistic: false
     });
-
     const [players, setPlayers] = useState(PLAYERS);
     const [gameTurns, setGameTurns] = useState([]);
 
@@ -118,11 +119,66 @@ function App() {
     const gameBoard = deriveGameBoard(gameTurns); //игровые ходы
     const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
+    const playerToWon = getPlayerToWon(resultGames)
+
+    const [scores, setScores] = useState({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+    const [seriesWinner, setSeriesWinner] = useState(null);
+    const [isSeriesEnded, setIsSeriesEnded] = useState(false);
+    const [gamesPlayed, setGamesPlayed] = useState(0);
+
+    useEffect(() => {
+        if (hasDraw) {
+            setGamesPlayed(prevGamesPlayed => {
+                const newGamesPlayed = prevGamesPlayed + 1;
+                if (newGamesPlayed >= parseInt(settings.gamesToWin)) {
+                    setSeriesWinner(winner);
+                }
+                return newGamesPlayed;
+            });
+        }
+    }, [hasDraw]);
+
+
+    useEffect(() => {
+        if (winner) {
+            setScores(prevScores => {
+                resultGames.push({
+                    gameNumber: resultGames.length + 1,
+                    winner: winner,
+                    symbol: gameTurns[0].player
+                });
+                return {
+                    ...prevScores,
+                    [winner]: prevScores[winner] + 1
+                }
+            });
+
+
+            setGamesPlayed(prevGamesPlayed => {
+                const newGamesPlayed = prevGamesPlayed + 1;
+                if (newGamesPlayed >= parseInt(settings.gamesToWin)) {
+                    setSeriesWinner(winner);
+                }
+                return newGamesPlayed;
+            });
+        }
+    }, [winner]);
 
     useEffect(() => {
         handlerSettingsButton();
     }, [])
-
+    useEffect(() => {
+        if (seriesWinner) {
+            setIsSeriesEnded(true);
+            setGamesPlayed(prevGamesPlayed => {
+                const newGamesPlayed = prevGamesPlayed + 1;
+                if (newGamesPlayed >= parseInt(settings.gamesToWin)) {
+                    setSeriesWinner(winner);
+                }
+                return newGamesPlayed;
+            });
+        }
+    }, [seriesWinner, winner, settings.gamesToWin]);
     function handlerSettingsButton() {
         setSettings(prevSettings => {
             return {
@@ -134,16 +190,20 @@ function App() {
 
     function handlerChangeSettings(settings) {
         setSettings(prevSettings => {
+            if(settings.gamesToWin && prevSettings.gamesToWin !==settings.gamesToWin){
+                resultGames = [];
+                setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+            }
             return {
                 ...prevSettings,
                 isSettingsOpen: false,
                 ...settings,
             }
         })
+        setGameTurns([]);
     }
 
     function handleSelectSquare(rowIndex, colIndex) {
-        //setActivePlayer((curActivePlayer) => curActivePlayer === "X" ? "O" : "X");
         setGameTurns((prevTurns) => {
             const currentPlayer = deriveActivePlayer(prevTurns);
 
@@ -159,16 +219,43 @@ function App() {
     }
 
     function handleRestart() {
-        setGameTurns([]);
+        if (isSeriesEnded) {
+            setSettings(prevState => ({
+                ...prevState,
+                openStatistic: true
+            }));
+            setGameTurns([]);
+            setSeriesWinner(null);
+            setIsSeriesEnded(false);
+            setGamesPlayed(0);
+        } else {
+            setGameTurns([]);
+            if (resultGames.length === settings.gamesToWin) {
+                resultGames = [];
+                setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+                setSettings(prevSettings => ({
+                        ...prevSettings,
+                        openStatistic: false
+                    })
+                )
+            }
+        }
     }
 
     function handlePlayerNameChange(symbol, newName) {
         setPlayers(prevPlayers => {
+            PLAYERS[symbol] = newName;
             return {
                 ...prevPlayers,
                 [symbol]: newName
             };
         });
+    }
+    let resultContent = null;
+    if (settings.gamesToWin <= resultGames.length) {
+        resultContent =
+            <TableOfWinners resultGames={resultGames} winner={playerToWon} isSeriesEnded={isSeriesEnded}
+                            onRestart={handleRestart}/>;
     }
 
     return (
@@ -178,7 +265,7 @@ function App() {
                     <img src={settingsIcon} alt="menu" className="menu__img"/>
                 </button>
                 {settings.isSettingsOpen && <Start settings={settings} onSettings={handlerChangeSettings}/>}
-
+                {settings.openStatistic && resultContent}
                 <ol id="players" className="highlight_player">
                     <Player
                         initialName={PLAYERS.X}
@@ -195,7 +282,10 @@ function App() {
                 </ol>
 
                 {(winner || hasDraw) && (
-                    <GameOver winner={winner} onRestart={handleRestart}/>
+                    <GameOver winner={winner} scores={scores} seriesWinner={seriesWinner}
+                              players={PLAYERS}
+                              onRestart={handleRestart}
+                              isSeriesEnded={isSeriesEnded}/>
                 )}
 
                 <GameBoard
