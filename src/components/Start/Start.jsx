@@ -1,13 +1,10 @@
 import {useEffect, useState} from "react";
-import {themes} from "../../App.jsx";
+import {themes} from "../../App";
 
 import styles from './Start.module.css';
 
 
 export default function Start({onSettings, settings}) {
-
-    const [opponents, setOpponents] = useState('Computer');
-
 
     const [styleColor, setStyleColor] = useState("dark");
 
@@ -32,7 +29,10 @@ export default function Start({onSettings, settings}) {
     }, [settings.themeId]);
 
     function handlerOpponentsChanged(e) {
-        setOpponents(e.target.value);
+        onSettings({
+            opponents: e.target.value,
+            isSettingsOpen: true
+        })
     }
 
     function handlerGamesToWinChanged(e) {
@@ -50,9 +50,7 @@ export default function Start({onSettings, settings}) {
     }
 
     function handlerSaveSettings() {
-        onSettings({
-            opponents
-        });
+        onSettings({});
     }
 
     return (
@@ -62,12 +60,12 @@ export default function Start({onSettings, settings}) {
                 <div className={styles.label__wrapper}>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="Computer" name="opponent"
-                               checked={opponents === 'Computer'} onChange={handlerOpponentsChanged}/>
+                               checked={settings.opponents === 'Computer'} onChange={handlerOpponentsChanged}/>
                         <span className={styles.span}>Computer</span>
                     </label>
                     <label className={styles.label}>
                         <input className={styles.input} type="radio" value="Friend" name="opponent"
-                               checked={opponents === 'Friend'} onChange={handlerOpponentsChanged}/>
+                               checked={settings.opponents === 'Friend'} onChange={handlerOpponentsChanged}/>
                         <span className={styles.span}>Friend</span>
                     </label>
                 </div>

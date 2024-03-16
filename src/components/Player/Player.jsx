@@ -1,10 +1,14 @@
 import styles from './Player.module.css';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 export default function Player({initialName, symbol, isActive, onChangeName}) {
     const [isEditing, setIsEditing] = useState(false);
     const [playerName, setPlayerName] = useState(initialName);
+    
+    useEffect(() => {
+        setPlayerName(initialName)
+    }, [initialName]);
 
     function handleEditClick() {
         setIsEditing((editing) => !editing);

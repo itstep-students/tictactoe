@@ -8,9 +8,9 @@ import Player from "./components/Player/Player";
 import GameBoard from "./components/GameBoard/GameBoard";
 import Log from "./components/Log/Log";
 import GameOver from "./components/GameOver/GameOver";
-import {WINNING_COMBINATIONS} from "./components/winning-combinations.jsx";
-import settingsIcon from './assets/setting.png';
 
+import {WINNING_COMBINATIONS} from "./components/winning-combinations";
+import settingsIcon from './assets/setting.png';
 
 import buttonLight from '/game-logo.png';
 import buttonDark from '/logo_1.png';
@@ -36,7 +36,7 @@ export const themes = [
 
 const PLAYERS = {
     'X': 'Player 1',
-    'O': 'Player 2'
+    'O': 'Friend'
 };
 
 const INITIAL_GAME_BOARD = [
@@ -46,7 +46,21 @@ const INITIAL_GAME_BOARD = [
 ];
 
 export const FIRST_PLAYER = "X";
-export const SECOND_PLAYER = "O"
+export const SECOND_PLAYER = "O";
+export const COMPUTER = "Computer";
+
+function playComputer(gameBoard) {
+    const emptyIndexes = [];
+    gameBoard.forEach((row, rowIndex) => {
+        row.forEach((col, colIndex) => {
+            if (!col) {
+                emptyIndexes.push([rowIndex, colIndex]);
+            }
+        });
+    });
+    const randomIndex = Math.floor(Math.random() * emptyIndexes.length);
+    return emptyIndexes.length ? emptyIndexes[randomIndex] : null;
+}
 
 function deriveActivePlayer(gameTurns) {
     let currentPlayer = FIRST_PLAYER;
@@ -107,7 +121,8 @@ function getPlayerToWon(resultGames) {
 function App() {
     const [settings, setSettings] = useState({
         isSettingsOpen: false,
-        opponents: 'Computer',
+        mainPlayer: PLAYERS.X,
+        opponents: PLAYERS.O,
         gamesToWin: 3,
         themeId: 1,
         openStatistic: false
@@ -165,6 +180,16 @@ function App() {
     }, [winner]);
 
     useEffect(() => {
+        if (settings.opponents === COMPUTER && activePlayer === "O" && !settings.isSettingsOpen) {
+            const playComputerResult = playComputer(gameBoard);
+            if (playComputerResult) {
+                const [rowIndex, colIndex] = playComputerResult;
+                handleSelectSquare(rowIndex, colIndex);
+            }
+        }
+    }, [gameBoard]);
+
+    useEffect(() => {
         handlerSettingsButton();
     }, [])
     useEffect(() => {
@@ -179,6 +204,7 @@ function App() {
             });
         }
     }, [seriesWinner, winner, settings.gamesToWin]);
+
     function handlerSettingsButton() {
         setSettings(prevSettings => {
             return {
@@ -190,9 +216,13 @@ function App() {
 
     function handlerChangeSettings(settings) {
         setSettings(prevSettings => {
-            if(settings.gamesToWin && prevSettings.gamesToWin !==settings.gamesToWin){
+            if (settings.gamesToWin && prevSettings.gamesToWin !== settings.gamesToWin) {
                 resultGames = [];
-                setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+                // setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+            }
+            if (settings.opponents && settings.opponents !== prevSettings.opponents) {
+                handlePlayerNameChange('O', settings.opponents);
+                resultGames = [];
             }
             return {
                 ...prevSettings,
@@ -245,12 +275,14 @@ function App() {
     function handlePlayerNameChange(symbol, newName) {
         setPlayers(prevPlayers => {
             PLAYERS[symbol] = newName;
+            setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
             return {
                 ...prevPlayers,
                 [symbol]: newName
             };
         });
     }
+
     let resultContent = null;
     if (settings.gamesToWin <= resultGames.length) {
         resultContent =
@@ -268,13 +300,13 @@ function App() {
                 {settings.openStatistic && resultContent}
                 <ol id="players" className="highlight_player">
                     <Player
-                        initialName={PLAYERS.X}
+                        initialName={settings.mainPlayer}
                         symbol='X'
                         isActive={activePlayer === "X"}
                         onChangeName={handlePlayerNameChange}
                     />
                     <Player
-                        initialName={PLAYERS.O}
+                        initialName={settings.opponents}
                         symbol='O'
                         isActive={activePlayer === "O"}
                         onChangeName={handlePlayerNameChange}
