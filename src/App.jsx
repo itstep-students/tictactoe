@@ -65,7 +65,7 @@ function playComputer(gameBoard) {
     });
   });
   const randomIndex = Math.floor(Math.random() * emptyIndexes.length);
-  return emptyIndexes[randomIndex];
+  return emptyIndexes.length ? emptyIndexes[randomIndex] : null;
 }
 
 function deriveActivePlayer(gameTurns) {
@@ -187,8 +187,11 @@ function App() {
   
   useEffect(() => {
     if (settings.opponents === COMPUTER && activePlayer === "O" && !settings.isSettingsOpen) {
-      const [rowIndex, colIndex] = playComputer(gameBoard);
-      handleSelectSquare(rowIndex, colIndex);
+      const playComputerResult = playComputer(gameBoard);
+      if (playComputerResult) {
+        const [rowIndex, colIndex] = playComputerResult;
+        handleSelectSquare(rowIndex, colIndex);
+      }
     }
   }, [gameBoard]);
   
@@ -225,6 +228,7 @@ function App() {
       }
       if (settings.opponents && settings.opponents !== prevSettings.opponents) {
         handlePlayerNameChange('O', settings.opponents);
+        setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
       }
       return {
         ...prevSettings,
