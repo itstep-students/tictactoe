@@ -229,7 +229,6 @@ function App() {
       if (settings.opponents && settings.opponents !== prevSettings.opponents) {
         handlePlayerNameChange('O', settings.opponents);
         resultGames = [];
-        setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
       }
       return {
         ...prevSettings,
@@ -282,6 +281,7 @@ function App() {
   function handlePlayerNameChange(symbol, newName) {
     setPlayers(prevPlayers => {
       PLAYERS[symbol] = newName;
+      setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
       return {
         ...prevPlayers,
         [symbol]: newName
