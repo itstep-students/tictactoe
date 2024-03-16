@@ -224,7 +224,7 @@ function App() {
     setSettings(prevSettings => {
       if (settings.gamesToWin && prevSettings.gamesToWin !== settings.gamesToWin) {
         resultGames = [];
-        setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+        // setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
       }
       if (settings.opponents && settings.opponents !== prevSettings.opponents) {
         handlePlayerNameChange('O', settings.opponents);
