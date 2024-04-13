@@ -6,111 +6,113 @@ import styles from './Start.module.css';
 
 export default function Start({onSettings, settings}) {
 
-    const [styleColor, setStyleColor] = useState("dark");
+  const [styleColor, setStyleColor] = useState("dark");
 
-    useEffect(() => {
-        const themeTmp = themes.find(theme => theme.id === settings.themeId);
+  useEffect(() => {
+    const themeTmp = themes.find(theme => theme.id === settings.themeId);
 
-        const imgElem = document.getElementById("img-logo");
-        const gameName = document.getElementById('game-name');
+    const imgElem = document.getElementById("img-logo");
+    const gameName = document.getElementById('game-name');
 
-        gameName.className = '';
-        gameName.classList.add(themeTmp.gameNameStyles)
+    gameName.className = '';
+    gameName.classList.add(themeTmp.gameNameStyles)
 
-        imgElem.src = themeTmp.logoImg;
+    imgElem.src = themeTmp.logoImg;
 
-        document.body.style.backgroundImage = `url(${themeTmp.backgroundImg})`;
+    document.body.style.backgroundImage = `url(${themeTmp.backgroundImg})`;
 
-        if (styleColor !== "light") {
-            setStyleColor("light");
-        } else {
-            setStyleColor("dark");
-        }
-    }, [settings.themeId]);
-
-    function handlerOpponentsChanged(e) {
-        onSettings({
-            opponents: e.target.value,
-            isSettingsOpen: true
-        })
+    if (styleColor !== "light") {
+      setStyleColor("light");
+    } else {
+      setStyleColor("dark");
     }
+  }, [settings.themeId]);
 
-    function handlerGamesToWinChanged(e) {
-        onSettings({
-            gamesToWin: Number(e.target.value),
-            isSettingsOpen: true
-        })
-    }
+  function handlerOpponentsChanged(e) {
+    onSettings({
+      opponents: e.target.value,
+      isSettingsOpen: true,
+      startNewGame: e.target.value !== settings.opponents
+    })
+  }
 
-    function handlerThemIdChanged(e) {
-        onSettings({
-            themeId: Number(e.target.value),
-            isSettingsOpen: true
-        })
-    }
+  function handlerGamesToWinChanged(e) {
+    onSettings({
+      gamesToWin: Number(e.target.value),
+      isSettingsOpen: true,
+      startNewGame: Number(e.target.value) !== settings.startNewGame
+    })
+  }
 
-    function handlerSaveSettings() {
-        onSettings({});
-    }
+  function handlerThemIdChanged(e) {
+    onSettings({
+      themeId: Number(e.target.value),
+      isSettingsOpen: true
+    })
+  }
 
-    return (
-        <div id="start" className={styles.settings__wrapper}>
-            <div className={styles.topic}>
-                <h2 className={styles.title}>Your opponent:</h2>
-                <div className={styles.label__wrapper}>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="Computer" name="opponent"
-                               checked={settings.opponents === 'Computer'} onChange={handlerOpponentsChanged}/>
-                        <span className={styles.span}>Computer</span>
-                    </label>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="Friend" name="opponent"
-                               checked={settings.opponents === 'Friend'} onChange={handlerOpponentsChanged}/>
-                        <span className={styles.span}>Friend</span>
-                    </label>
-                </div>
-            </div>
-            <div className={styles.topic}>
-                <h2 className={styles.title}>Number of games to win:</h2>
-                <div className={styles.label__wrapper}>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="3" name="number"
-                               checked={settings.gamesToWin === 3} onChange={handlerGamesToWinChanged}/>
-                        <span className={styles.span}>3</span>
-                    </label>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="5" name="number"
-                               checked={settings.gamesToWin === 5} onChange={handlerGamesToWinChanged}/>
-                        <span className={styles.span}>5</span>
-                    </label>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="7" name="number"
-                               checked={settings.gamesToWin === 7} onChange={handlerGamesToWinChanged}/>
-                        <span className={styles.span}>7</span>
-                    </label>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="9" name="number"
-                               checked={settings.gamesToWin === 9} onChange={handlerGamesToWinChanged}/>
-                        <span className={styles.span}>9</span>
-                    </label>
-                </div>
-            </div>
-            <div className={styles.topic}>
-                <h2 className={styles.title}>Background:</h2>
-                <div className={styles.label__wrapper}>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="1" name="background"
-                               checked={settings.themeId === 1} onChange={handlerThemIdChanged}/>
-                        <span className={styles.span}>Theme1</span>
-                    </label>
-                    <label className={styles.label}>
-                        <input className={styles.input} type="radio" value="2" name="background"
-                               checked={settings.themeId === 2} onChange={handlerThemIdChanged}/>
-                        <span className={styles.span}>Theme2</span>
-                    </label>
-                </div>
-            </div>
-                <button className={styles.start__button} onClick={handlerSaveSettings}>Start new game</button>
+  function handlerSaveSettings() {
+    onSettings({});
+  }
+
+  return (
+    <div id="start" className={styles.settings__wrapper}>
+      <div className={styles.topic}>
+        <h2 className={styles.title}>Your opponent:</h2>
+        <div className={styles.label__wrapper}>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="Computer" name="opponent"
+                   checked={settings.opponents === 'Computer'} onChange={handlerOpponentsChanged}/>
+            <span className={styles.span}>Computer</span>
+          </label>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="Friend" name="opponent"
+                   checked={settings.opponents === 'Friend'} onChange={handlerOpponentsChanged}/>
+            <span className={styles.span}>Friend</span>
+          </label>
         </div>
-    )
+      </div>
+      <div className={styles.topic}>
+        <h2 className={styles.title}>Number of games to win:</h2>
+        <div className={styles.label__wrapper}>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="3" name="number"
+                   checked={settings.gamesToWin === 3} onChange={handlerGamesToWinChanged}/>
+            <span className={styles.span}>3</span>
+          </label>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="5" name="number"
+                   checked={settings.gamesToWin === 5} onChange={handlerGamesToWinChanged}/>
+            <span className={styles.span}>5</span>
+          </label>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="7" name="number"
+                   checked={settings.gamesToWin === 7} onChange={handlerGamesToWinChanged}/>
+            <span className={styles.span}>7</span>
+          </label>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="9" name="number"
+                   checked={settings.gamesToWin === 9} onChange={handlerGamesToWinChanged}/>
+            <span className={styles.span}>9</span>
+          </label>
+        </div>
+      </div>
+      <div className={styles.topic}>
+        <h2 className={styles.title}>Background:</h2>
+        <div className={styles.label__wrapper}>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="1" name="background"
+                   checked={settings.themeId === 1} onChange={handlerThemIdChanged}/>
+            <span className={styles.span}>Theme1</span>
+          </label>
+          <label className={styles.label}>
+            <input className={styles.input} type="radio" value="2" name="background"
+                   checked={settings.themeId === 2} onChange={handlerThemIdChanged}/>
+            <span className={styles.span}>Theme2</span>
+          </label>
+        </div>
+      </div>
+      <button className={styles.start__button} onClick={handlerSaveSettings}>Start new game</button>
+    </div>
+  )
 }
