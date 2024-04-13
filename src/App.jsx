@@ -217,11 +217,12 @@ function App() {
 
   function handlerChangeSettings(settings) {
     setSettings(prevSettings => {
+      if(settings.opponents){
+        handlePlayerNameChange('O', settings.opponents)
+      }
       if (settings.startNewGame) {
         resultGames = [];
-        settings.opponents
-          ? handlePlayerNameChange('O', settings.opponents)
-          : setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+        setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
       }
       return {
         ...prevSettings,
@@ -274,8 +275,26 @@ function App() {
 
   function handlePlayerNameChange(symbol, newName) {
     setPlayers(prevPlayers => {
+      const saveScore = scores[players[symbol]];
+      setScores(prevScore=>{
+        delete prevScore[players[symbol]];
+        return {
+          ...prevScore,
+          [newName]: saveScore
+        }
+      });
+
       PLAYERS[symbol] = newName;
-      setScores({[PLAYERS.X]: 0, [PLAYERS.O]: 0});
+
+      resultGames = resultGames.map(game=>{
+        if(game.symbol===symbol){
+          return {
+            ...game,
+            winner: newName
+          }
+        }
+        return game;
+      });
       return {
         ...prevPlayers,
         [symbol]: newName
